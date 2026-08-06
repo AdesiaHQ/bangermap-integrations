@@ -33,6 +33,12 @@ jobs:
           npm install -g npm@latest
           npm --version
 
+      - name: Configure the registry with no token, so npm must use OIDC
+        run: |
+          printf 'registry=https://registry.npmjs.org/\n' > "$RUNNER_TEMP/clean.npmrc"
+          echo "NPM_CONFIG_USERCONFIG=$RUNNER_TEMP/clean.npmrc" >> "$GITHUB_ENV"
+          echo "NODE_AUTH_TOKEN=" >> "$GITHUB_ENV"
+
       - name: Check the shared engine still passes its tests
         run: npm ci && npm test
 
