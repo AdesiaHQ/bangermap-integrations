@@ -17,16 +17,28 @@ permissions:
   id-token: write
 
 jobs:
+  select:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.pick.outputs.packages }}
+    steps:
+      - id: pick
+        env:
+          CHOICE: ${{ inputs.package }}
+        run: |
+          if [ "$CHOICE" = "both" ]; then
+            echo 'packages=["mcp","n8n"]' >> "$GITHUB_OUTPUT"
+          else
+            echo "packages=[\"$CHOICE\"]" >> "$GITHUB_OUTPUT"
+          fi
+
   publish:
+    needs: select
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        package: [mcp, n8n]
-    if: ${{ github.event.inputs.package == 'both' || github.event.inputs.package == matrix.package }}
-    defaults:
-      run:
-        working-directory: ${{ matrix.package }}
+        package: ${{ fromJSON(needs.select.outputs.packages) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -38,21 +50,25 @@ jobs:
       - name: Use an npm that supports trusted publishing
         run: npm install -g npm@latest
 
-      - run: npm ci
-
-      - name: Check the engine tests still pass
-        working-directory: .
+      - name: Check the shared engine still passes its tests
         run: npm ci && npm test
 
-      - name: Lint the n8n node against n8n's own rules
+      - run: npm ci
+        working-directory: ${{ matrix.package }}
+
+      - name: Lint the node against n8n's own rules
         if: matrix.package == 'n8n'
+        working-directory: n8n
         run: npm run lint
 
       - run: npm run typecheck
+        working-directory: ${{ matrix.package }}
 
       - run: npm run build
+        working-directory: ${{ matrix.package }}
 
       - name: Refuse to republish an existing version
+        working-directory: ${{ matrix.package }}
         run: |
           NAME=$(node -p "require('./package.json').name")
           VERSION=$(node -p "require('./package.json').version")
@@ -62,4 +78,5 @@ jobs:
           fi
 
       - name: Publish with provenance
+        working-directory: ${{ matrix.package }}
         run: npm publish --provenance --access public
