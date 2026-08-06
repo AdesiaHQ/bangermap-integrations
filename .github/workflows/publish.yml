@@ -42,7 +42,7 @@ jobs:
 
       - name: Check the engine tests still pass
         working-directory: .
-        run: npm install && npm test
+        run: npm ci && npm test
 
       - name: Lint the n8n node against n8n's own rules
         if: matrix.package == 'n8n'
