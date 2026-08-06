@@ -1,0 +1,65 @@
+name: publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Which package to publish
+        type: choice
+        options:
+          - both
+          - mcp
+          - n8n
+        default: both
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [mcp, n8n]
+    if: ${{ github.event.inputs.package == 'both' || github.event.inputs.package == matrix.package }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.package }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Use an npm that supports trusted publishing
+        run: npm install -g npm@latest
+
+      - run: npm ci
+
+      - name: Check the engine tests still pass
+        working-directory: .
+        run: npm install && npm test
+
+      - name: Lint the n8n node against n8n's own rules
+        if: matrix.package == 'n8n'
+        run: npm run lint
+
+      - run: npm run typecheck
+
+      - run: npm run build
+
+      - name: Refuse to republish an existing version
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION is already on npm. Bump the version first." >&2
+            exit 1
+          fi
+
+      - name: Publish with provenance
+        run: npm publish --provenance --access public
