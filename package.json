@@ -1,0 +1,15 @@
+{
+  "name": "bangermap-integrations",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Shared scoring engine and YouTube client behind bangermap-mcp and n8n-nodes-bangermap",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vitest": "^4.1.10"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "bangermap-mcp",
+  "version": "1.0.0",
+  "description": "YouTube outlier research over MCP, on your own free YouTube Data API key",
+  "keywords": ["mcp", "youtube", "outliers", "research", "creator"],
+  "license": "MIT",
+  "homepage": "https://bangermap.com",
+  "author": {
+    "name": "tnrdd",
+    "email": "tnrdd@tutanota.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdesiaHQ/bangermap-integrations.git",
+    "directory": "mcp"
+  },
+  "type": "module",
+  "bin": {
+    "bangermap-mcp": "dist/index.js"
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --packages=external --banner:js='#!/usr/bin/env node' --outfile=dist/index.js && chmod +x dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "esbuild": "^0.28.1",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "n8n-nodes-bangermap",
+  "version": "1.0.0",
+  "description": "Find YouTube outliers in n8n, on your own free YouTube Data API key",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "youtube",
+    "outliers",
+    "research",
+    "creator"
+  ],
+  "license": "MIT",
+  "homepage": "https://bangermap.com",
+  "author": {
+    "name": "tnrdd",
+    "email": "tnrdd@tutanota.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdesiaHQ/bangermap-integrations.git",
+    "directory": "n8n"
+  },
+  "main": "index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/BangermapApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Bangermap/Bangermap.node.js"
+    ]
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --ext .ts,.json nodes credentials package.json"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "@typescript-eslint/parser": "^7.18.0",
+    "esbuild": "^0.28.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.3",
+    "n8n-workflow": "^1.100.0",
+    "typescript": "^5.8.3"
+  }
+}
