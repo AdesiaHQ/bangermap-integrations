@@ -47,6 +47,11 @@ jobs:
           CHOICE: ${{ inputs.package }}
         run: |
           set -eu
+          if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then
+            echo "OIDC environment present"
+          else
+            echo "OIDC environment MISSING, id-token permission did not reach this job" >&2
+          fi
           for pkg in mcp n8n; do
             if [ "$CHOICE" != "both" ] && [ "$CHOICE" != "$pkg" ]; then
               continue
@@ -65,7 +70,7 @@ jobs:
               if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
                 echo "$NAME@$VERSION is already on npm, skipping"
               else
-                npm publish --provenance --access public
+                npm publish --access public
               fi
             )
             echo "::endgroup::"
