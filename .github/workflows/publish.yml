@@ -17,28 +17,8 @@ permissions:
   id-token: write
 
 jobs:
-  select:
-    runs-on: ubuntu-latest
-    outputs:
-      packages: ${{ steps.pick.outputs.packages }}
-    steps:
-      - id: pick
-        env:
-          CHOICE: ${{ inputs.package }}
-        run: |
-          if [ "$CHOICE" = "both" ]; then
-            echo 'packages=["mcp","n8n"]' >> "$GITHUB_OUTPUT"
-          else
-            echo "packages=[\"$CHOICE\"]" >> "$GITHUB_OUTPUT"
-          fi
-
   publish:
-    needs: select
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJSON(needs.select.outputs.packages) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -49,35 +29,38 @@ jobs:
           package-manager-cache: false
 
       - name: Use an npm that supports trusted publishing
-        run: npm install -g npm@latest
+        run: |
+          npm install -g npm@latest
+          npm --version
 
       - name: Check the shared engine still passes its tests
         run: npm ci && npm test
 
-      - run: npm ci
-        working-directory: ${{ matrix.package }}
-
-      - name: Lint the node against n8n's own rules
-        if: matrix.package == 'n8n'
-        working-directory: n8n
-        run: npm run lint
-
-      - run: npm run typecheck
-        working-directory: ${{ matrix.package }}
-
-      - run: npm run build
-        working-directory: ${{ matrix.package }}
-
-      - name: Refuse to republish an existing version
-        working-directory: ${{ matrix.package }}
+      - name: Build and publish each selected package with provenance
+        env:
+          CHOICE: ${{ inputs.package }}
         run: |
-          NAME=$(node -p "require('./package.json').name")
-          VERSION=$(node -p "require('./package.json').version")
-          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
-            echo "$NAME@$VERSION is already on npm. Bump the version first." >&2
-            exit 1
-          fi
-
-      - name: Publish with provenance
-        working-directory: ${{ matrix.package }}
-        run: npm publish --provenance --access public
+          set -eu
+          for pkg in mcp n8n; do
+            if [ "$CHOICE" != "both" ] && [ "$CHOICE" != "$pkg" ]; then
+              continue
+            fi
+            echo "::group::$pkg"
+            (
+              cd "$pkg"
+              npm ci
+              if [ "$pkg" = "n8n" ]; then
+                npm run lint
+              fi
+              npm run typecheck
+              npm run build
+              NAME=$(node -p "require('./package.json').name")
+              VERSION=$(node -p "require('./package.json').version")
+              if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+                echo "$NAME@$VERSION is already on npm, skipping"
+              else
+                npm publish --provenance --access public
+              fi
+            )
+            echo "::endgroup::"
+          done
