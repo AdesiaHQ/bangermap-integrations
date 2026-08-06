@@ -9,10 +9,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["node"],
-    "paths": {
-      "@engine/*": ["../src/lib/*"]
-    }
+    "types": ["node"]
   },
   "include": [
     "nodes/**/*.ts",

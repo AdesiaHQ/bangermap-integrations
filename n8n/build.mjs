@@ -1,8 +1,5 @@
-import { cp, mkdir, rm } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+import { cp, rm } from "node:fs/promises";
 import { build } from "esbuild";
-
-const engine = fileURLToPath(new URL("../src/lib", import.meta.url));
 
 const shared = {
   bundle: true,
@@ -10,7 +7,6 @@ const shared = {
   target: "node20",
   format: "cjs",
   external: ["n8n-workflow"],
-  alias: { "@engine": engine },
   logLevel: "info",
 };
 
@@ -28,6 +24,8 @@ await build({
   outfile: "dist/credentials/BangermapApi.credentials.js",
 });
 
-await mkdir("dist/nodes/Bangermap", { recursive: true });
 await cp("nodes/Bangermap/bangermap.svg", "dist/nodes/Bangermap/bangermap.svg");
+await cp("nodes/Bangermap/bangermap.dark.svg", "dist/nodes/Bangermap/bangermap.dark.svg");
 await cp("nodes/Bangermap/Bangermap.node.json", "dist/nodes/Bangermap/Bangermap.node.json");
+await cp("credentials/bangermap.svg", "dist/credentials/bangermap.svg");
+await cp("credentials/bangermap.dark.svg", "dist/credentials/bangermap.dark.svg");

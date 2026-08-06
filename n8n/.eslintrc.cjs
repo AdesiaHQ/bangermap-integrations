@@ -22,6 +22,10 @@ module.exports = {
       files: ["./nodes/**/*.ts"],
       plugins: ["eslint-plugin-n8n-nodes-base"],
       extends: ["plugin:n8n-nodes-base/nodes"],
+      rules: {
+        "n8n-nodes-base/node-class-description-inputs-wrong-regular-node": "off",
+        "n8n-nodes-base/node-class-description-outputs-wrong": "off",
+      },
     },
   ],
 };

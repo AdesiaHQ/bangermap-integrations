@@ -2,6 +2,7 @@ import type {
   IAuthenticateGeneric,
   ICredentialTestRequest,
   ICredentialType,
+  Icon,
   INodeProperties,
 } from "n8n-workflow";
 
@@ -9,6 +10,8 @@ export class BangermapApi implements ICredentialType {
   name = "bangermapApi";
 
   displayName = "Bangermap YouTube Data API";
+
+  icon: Icon = { light: "file:bangermap.svg", dark: "file:bangermap.dark.svg" };
 
   documentationUrl = "https://bangermap.com/tools/outlier-finder";
 

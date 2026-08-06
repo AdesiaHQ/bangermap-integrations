@@ -6,17 +6,17 @@ import type {
   INodeType,
   INodeTypeDescription,
 } from "n8n-workflow";
-import { NodeOperationError } from "n8n-workflow";
+import { NodeConnectionTypes, NodeOperationError } from "n8n-workflow";
 
 import {
   scoreChannelVideos,
   type ChannelBaselines,
   type ScoredVideo,
-} from "@engine/outliers/engine";
-import { YouTubeClient } from "@engine/youtube/client";
-import { parseChannelList, resolveChannels } from "@engine/youtube/resolve";
-import { formatDuration } from "@engine/youtube/duration";
-import { YouTubeApiError, type ChannelMeta } from "@engine/youtube/types";
+} from "../../../src/lib/outliers/engine";
+import { YouTubeClient } from "../../../src/lib/youtube/client";
+import { parseChannelList, resolveChannels } from "../../../src/lib/youtube/resolve";
+import { formatDuration } from "../../../src/lib/youtube/duration";
+import { YouTubeApiError, type ChannelMeta } from "../../../src/lib/youtube/types";
 
 const DEPTHS: Record<string, number> = { light: 50, standard: 100, deep: 200 };
 const MAX_COMPARE_CHANNELS = 25;
@@ -147,15 +147,15 @@ export class Bangermap implements INodeType {
   description: INodeTypeDescription = {
     displayName: "Bangermap",
     name: "bangermap",
-    icon: "file:bangermap.svg",
+    icon: { light: "file:bangermap.svg", dark: "file:bangermap.dark.svg" },
     group: ["transform"],
     version: 1,
     subtitle: '={{$parameter["operation"]}}',
     description: "Find YouTube outliers on your own free YouTube Data API key",
     defaults: { name: "Bangermap" },
     usableAsTool: true,
-    inputs: ["main"],
-    outputs: ["main"],
+    inputs: [NodeConnectionTypes.Main],
+    outputs: [NodeConnectionTypes.Main],
     credentials: [{ name: "bangermapApi", required: true }],
     properties: [
       {
@@ -414,7 +414,6 @@ export class Bangermap implements INodeType {
           out.push({ json: { error: explain(error) }, pairedItem: { item: i } });
           continue;
         }
-        if (error instanceof NodeOperationError) throw error;
         throw new NodeOperationError(node, explain(error), { itemIndex: i });
       }
     }

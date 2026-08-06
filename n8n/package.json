@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-bangermap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Find YouTube outliers in n8n, on your own free YouTube Data API key",
   "keywords": [
     "n8n-community-node-package",
