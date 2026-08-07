@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.adesiahq/bangermap-mcp",
   "title": "Bangermap",
-  "description": "YouTube outlier research on your own free YouTube Data API key. Finds the videos that beat their channel's own baseline, compares competitors against themselves, and sweeps a niche through the channel graph.",
+  "description": "Find YouTube outliers, videos that beat their channel's own baseline, on your own free API key.",
   "websiteUrl": "https://bangermap.com",
   "repository": {
     "url": "https://github.com/AdesiaHQ/bangermap-integrations",
