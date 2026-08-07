@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-bangermap",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Find YouTube outliers in n8n, on your own free YouTube Data API key",
   "keywords": [
     "n8n-community-node-package",
@@ -35,13 +35,13 @@
       "dist/nodes/Bangermap/Bangermap.node.js"
     ]
   },
+  "engines": {
+    "node": ">=20.15"
+  },
   "scripts": {
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --ext .ts,.json nodes credentials package.json"
-  },
-  "peerDependencies": {
-    "n8n-workflow": "*"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",
