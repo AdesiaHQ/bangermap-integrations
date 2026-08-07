@@ -1,0 +1,34 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.adesiahq/bangermap-mcp",
+  "title": "Bangermap",
+  "description": "YouTube outlier research on your own free YouTube Data API key. Finds the videos that beat their channel's own baseline, compares competitors against themselves, and sweeps a niche through the channel graph.",
+  "websiteUrl": "https://bangermap.com",
+  "repository": {
+    "url": "https://github.com/AdesiaHQ/bangermap-integrations",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "version": "1.0.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "bangermap-mcp",
+      "version": "1.0.2",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "YOUTUBE_API_KEY",
+          "description": "Your own YouTube Data API v3 key, created free in the Google Cloud console",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

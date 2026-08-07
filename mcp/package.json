@@ -1,6 +1,7 @@
 {
   "name": "bangermap-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "mcpName": "io.github.adesiahq/bangermap-mcp",
   "description": "YouTube outlier research over MCP, on your own free YouTube Data API key",
   "keywords": [
     "mcp",

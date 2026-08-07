@@ -70,3 +70,23 @@ jobs:
             )
             echo "::endgroup::"
           done
+
+      - name: Install mcp-publisher
+        if: inputs.package == 'mcp'
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Publish the server to the MCP Registry
+        if: inputs.package == 'mcp'
+        run: |
+          set -eu
+          SERVER=$(node -p "require('./mcp/server.json').name")
+          VERSION=$(node -p "require('./mcp/server.json').version")
+          LISTED=$(curl -fsS "https://registry.modelcontextprotocol.io/v0.1/servers?search=$SERVER" || echo "")
+          if printf '%s' "$LISTED" | grep -q "\"version\":\"$VERSION\""; then
+            echo "$SERVER@$VERSION is already in the MCP Registry, skipping"
+            exit 0
+          fi
+          ./mcp-publisher login github-oidc
+          cd mcp
+          ../mcp-publisher publish
