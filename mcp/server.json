@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.adesiahq/bangermap-mcp",
+  "name": "io.github.AdesiaHQ/bangermap-mcp",
   "title": "Bangermap",
   "description": "Find YouTube outliers, videos that beat their channel's own baseline, on your own free API key.",
   "websiteUrl": "https://bangermap.com",
@@ -9,13 +9,13 @@
     "source": "github",
     "subfolder": "mcp"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "bangermap-mcp",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
