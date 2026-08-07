@@ -7,10 +7,8 @@ on:
         description: Which package to publish
         type: choice
         options:
-          - both
           - mcp
-          - n8n
-        default: both
+        default: mcp
 
 permissions:
   contents: read
@@ -52,7 +50,7 @@ jobs:
           else
             echo "OIDC environment MISSING, id-token permission did not reach this job" >&2
           fi
-          for pkg in mcp n8n; do
+          for pkg in mcp; do
             if [ "$CHOICE" != "both" ] && [ "$CHOICE" != "$pkg" ]; then
               continue
             fi
@@ -60,9 +58,6 @@ jobs:
             (
               cd "$pkg"
               npm ci
-              if [ "$pkg" = "n8n" ]; then
-                npm run lint
-              fi
               npm run typecheck
               npm run build
               NAME=$(node -p "require('./package.json').name")

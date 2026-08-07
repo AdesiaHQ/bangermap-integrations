@@ -7,9 +7,9 @@ An outlier is a video that beat its own channel's normal performance. A 10x on a
 | Package | What it is |
 | --- | --- |
 | [`bangermap-mcp`](mcp) | An MCP server, four tools over stdio, for Claude Code, Claude Desktop and any other MCP client |
-| [`n8n-nodes-bangermap`](n8n) | An n8n community node, the same four operations, one output item per outlier |
+| [`n8n-nodes-bangermap`](https://github.com/AdesiaHQ/n8n-nodes-bangermap) | An n8n community node, the same four operations, one output item per outlier, in its own repo |
 
-Both read `src/lib`, which is the scoring engine and the YouTube client they share with the [Bangermap](https://bangermap.com) app and its free browser tool. One definition of an outlier, four places it runs, so they cannot disagree.
+The server reads `src/lib`, the scoring engine and YouTube client it shares with the [Bangermap](https://bangermap.com) app, its free browser tool and the n8n node. One definition of an outlier, four places it runs, so they cannot disagree.
 
 ## Why bring your own key
 
@@ -27,11 +27,8 @@ The outlier multiple and the baseline are computed here, not by YouTube. View an
 
 ## Build and test
 
-Each package installs and builds on its own.
-
 ```sh
 cd mcp && npm install && npm run build
-cd n8n && npm install && npm run build
 ```
 
 The shared engine's tests run from the root.
