@@ -73,6 +73,21 @@ export interface SearchResultChannel {
   title: string;
 }
 
+export function explainFailure(error: YouTubeApiError): string {
+  switch (error.kind) {
+    case "invalid_key":
+      return "Google rejected this key. Re-copy it from the credentials page and watch for missing characters.";
+    case "api_not_enabled":
+      return "The key works, but the YouTube Data API is not enabled on its project yet. Enable it, give it a minute, then check again.";
+    case "quota_exceeded":
+      return "This key has used its free allowance for today. It resets at midnight Pacific time.";
+    case "network":
+      return "Could not reach Google. Check your connection and try again.";
+    default:
+      return `Something unexpected came back from Google. ${error.message}`;
+  }
+}
+
 export class YouTubeClient {
   private apiKey: string;
   private onCost: ((cost: QuotaCost) => void) | null;
@@ -198,7 +213,7 @@ export class YouTubeClient {
     const data = await this.get(
       "search",
       { part: "snippet", q: query, type: "channel", maxResults: String(Math.min(maxResults, 50)) },
-      { units: 1, searches: 1 },
+      { units: 100, searches: 1 },
     );
     return (data.items ?? [])
       .map((item: Json) => ({
@@ -212,7 +227,7 @@ export class YouTubeClient {
     const data = await this.get(
       "search",
       { part: "snippet", q: query, type: "video", maxResults: String(Math.min(maxResults, 50)) },
-      { units: 1, searches: 1 },
+      { units: 100, searches: 1 },
     );
     const seen = new Map<string, SearchResultChannel>();
     for (const item of data.items ?? []) {

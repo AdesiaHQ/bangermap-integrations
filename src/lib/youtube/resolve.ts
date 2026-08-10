@@ -79,14 +79,35 @@ export function parseChannelList(text: string): ChannelRef[] {
   return refs;
 }
 
+// Injected by the desktop app so this module stays free of Tauri imports,
+// which the website's tools import it without.
+export interface ChannelCache {
+  byHandle(handle: string): Promise<ChannelMeta | null>;
+  save(channels: ChannelMeta[]): Promise<void>;
+}
+
+async function cachedChannelForHandle(
+  cache: ChannelCache | undefined,
+  handle: string,
+): Promise<ChannelMeta | null> {
+  if (!cache) return null;
+  try {
+    return await cache.byHandle(handle);
+  } catch {
+    return null;
+  }
+}
+
 export async function resolveChannels(
   client: YouTubeClient,
   refs: ChannelRef[],
+  cache?: ChannelCache,
 ): Promise<ResolveResult> {
   const failures: ResolveFailure[] = [];
   const directIds: string[] = [];
   const pendingIds: string[] = [];
   const channels: ChannelMeta[] = [];
+  const fetchedFromApi: ChannelMeta[] = [];
 
   for (const ref of refs) {
     if (ref.kind === "id") {
@@ -99,15 +120,24 @@ export async function resolveChannels(
   for (const ref of refs) {
     try {
       if (ref.kind === "handle") {
+        const cached = await cachedChannelForHandle(cache, ref.value);
+        if (cached) {
+          channels.push(cached);
+          continue;
+        }
         const channel = await client.channelByHandle(ref.value);
-        if (channel) channels.push(channel);
-        else failures.push({ input: ref.value, reason: "No channel found for this handle" });
+        if (channel) {
+          channels.push(channel);
+          fetchedFromApi.push(channel);
+        } else failures.push({ input: ref.value, reason: "No channel found for this handle" });
       } else if (ref.kind === "username") {
         const channel =
           (await client.channelByLegacyUsername(ref.value)) ??
           (await client.channelByHandle(ref.value));
-        if (channel) channels.push(channel);
-        else failures.push({ input: ref.value, reason: "No channel found for this legacy username" });
+        if (channel) {
+          channels.push(channel);
+          fetchedFromApi.push(channel);
+        } else failures.push({ input: ref.value, reason: "No channel found for this legacy username" });
       } else if (ref.kind === "videoId") {
         const channelId = await client.channelIdForVideo(ref.value);
         if (channelId) pendingIds.push(channelId);
@@ -127,10 +157,19 @@ export async function resolveChannels(
   if (allIds.length > 0) {
     const fetched = await client.channelsByIds(allIds);
     channels.push(...fetched);
+    fetchedFromApi.push(...fetched);
     for (const id of allIds) {
       if (!fetched.some((c) => c.id === id)) {
         failures.push({ input: id, reason: "Channel not found" });
       }
+    }
+  }
+
+  if (cache && fetchedFromApi.length > 0) {
+    try {
+      await cache.save(fetchedFromApi);
+    } catch {
+      // resolution still succeeded, the cache write is only an optimization
     }
   }
 
