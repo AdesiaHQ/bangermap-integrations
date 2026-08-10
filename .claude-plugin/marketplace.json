@@ -6,13 +6,27 @@
   },
   "plugins": [
     {
-      "name": "bangermap",
+      "name": "youtube-outlier-research",
       "source": "./",
-      "description": "YouTube outlier research. Rank a channel's uploads by how far each beat that channel's own baseline, on your own free YouTube Data API key.",
+      "description": "YouTube outlier finder and competitor research. Ranks a channel's recent uploads and Shorts by how far each beat that channel's own baseline views, compares channels, and sweeps a niche for video ideas that already worked. Runs on your own free YouTube Data API key, unmetered.",
       "author": {
         "name": "Adesia",
         "url": "https://bangermap.com"
-      }
+      },
+      "keywords": [
+        "youtube",
+        "outlier",
+        "outliers",
+        "youtube-analytics",
+        "channel-analytics",
+        "competitor-research",
+        "video-ideas",
+        "content-research",
+        "shorts",
+        "creator",
+        "viral",
+        "mcp"
+      ]
     }
   ]
 }
