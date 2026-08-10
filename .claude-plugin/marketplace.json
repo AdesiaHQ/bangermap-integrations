@@ -1,0 +1,18 @@
+{
+  "name": "bangermap",
+  "owner": {
+    "name": "Adesia",
+    "url": "https://bangermap.com"
+  },
+  "plugins": [
+    {
+      "name": "bangermap",
+      "source": "./",
+      "description": "YouTube outlier research. Rank a channel's uploads by how far each beat that channel's own baseline, on your own free YouTube Data API key.",
+      "author": {
+        "name": "Adesia",
+        "url": "https://bangermap.com"
+      }
+    }
+  ]
+}
